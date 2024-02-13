@@ -1,9 +1,12 @@
-package homework;
+package homework.client;
+
+import homework.server.Server;
+import homework.server.ServerWindow;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ClientGUI extends JFrame {
+public class ClientGUI extends JFrame implements View {
     //    Window size and position
     private static final int WIDTH = 400;
     private static final int HEIGHT = 300;
@@ -24,11 +27,13 @@ public class ClientGUI extends JFrame {
     private final JTextField tfMessage = new JTextField();
     private final JButton btnSend = new JButton("Send");
 
-    private ServerWindow serverWindow;
-    private boolean statusConnect;
+    private Server server;
+    private Client client;
 
-    ClientGUI(ServerWindow serverWindow) {
-        this.serverWindow = serverWindow;
+    public ClientGUI(ServerWindow server) {
+        this.server = server.getServer();
+
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setSize(WIDTH, HEIGHT);
@@ -50,19 +55,18 @@ public class ClientGUI extends JFrame {
         add(scrollLog);
 
         btnLogin.addActionListener(e -> {
-            if (serverWindow.isServerWorking) {
-                String lastMessages = serverWindow.connectClient(this);
+            if (this.server.isServerStatus()) {
                 panelTop.setVisible(false);
-                log.append("Connect is successful\n");
-                log.append(lastMessages);
+                this.client = new Client(getUsername(), this, this.server);
+                server.connectClient(this.client);
+                openConnect();
             } else {
                 log.append("Error connect\n");
             }
         });
 
         btnSend.addActionListener(e -> {
-//            String msg = serverWindow.getMessage(tfLogin.getText(), tfMessage.getText());
-            serverWindow.getMessage(tfLogin.getText(), tfMessage.getText());
+            server.getMessage(tfLogin.getText(), tfMessage.getText());
             tfMessage.setText("");
         });
 
@@ -74,11 +78,24 @@ public class ClientGUI extends JFrame {
         return tfLogin.getText();
     }
 
+    @Override
     public void closeConnect() {
         panelTop.setVisible(true);
-        log.append("Close connect\n");
+        log.append("\nClose connect\n");
     }
-    public void receiveNewMessage (String msg) {
-        log.append(msg);
+
+    @Override
+    public void receiveMessage(String message) {
+        log.append(message);
+    }
+
+    @Override
+    public void openConnect() {
+        log.append("\nConnect is successful\n");
+    }
+
+    @Override
+    public String getName() {
+        return tfLogin.getText();
     }
 }
