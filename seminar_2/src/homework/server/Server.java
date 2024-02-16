@@ -13,7 +13,7 @@ public class Server {
     private String FILE_LOG;
     private LinkedList<Client> lstClients;
 
-    private ServerWindow window;
+    private View window;
 
     public Server(ServerWindow window) {
         this.window = window;

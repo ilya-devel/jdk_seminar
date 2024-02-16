@@ -6,7 +6,7 @@ public class Client {
     private String name;
     private Server server;
 
-    private ClientGUI gui;
+    private View gui;
 
     public Client(String name, ClientGUI gui, Server server) {
         this.name = name;
