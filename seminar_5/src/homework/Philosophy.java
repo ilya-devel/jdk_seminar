@@ -25,8 +25,9 @@ public class Philosophy extends Thread {
             latch.await();
             while (isHungry) {
                 if (leftFork.isUsing() && rightFork.isUsing()) eatingProcess();
-                System.out.println(this.name + " размышляет");
-                Thread.sleep(1000L * new Random().nextInt(1, 10));
+                else System.out.println(this.name + ": Вилки заняты подумаю ещё");
+                if (isHungry) System.out.println(this.name + " размышляет");
+                goSomeProcess();
             }
             System.out.println(name + " наелся");
         } catch (InterruptedException e) {
@@ -37,12 +38,8 @@ public class Philosophy extends Thread {
     private void eatingProcess() {
         leftFork.setUsing(true);
         rightFork.setUsing(true);
-        System.out.println(name + " кушает используя " + leftFork.getName() + " и " + rightFork.getName());
-        try {
-            Thread.sleep(1000L * new Random().nextInt(1, 10));
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        System.out.println(name + " кушает используя " + leftFork.getName() + " и " + rightFork.getName() + " (Осталось ещё " + (this.countEating - 1) + " раз/а)");
+        goSomeProcess();
         countEating--;
         leftFork.setUsing(false);
         rightFork.setUsing(false);
@@ -56,5 +53,13 @@ public class Philosophy extends Thread {
         return "Philosophy{" +
                 "name='" + name + '\'' +
                 "with forks: " + leftFork + ", " + rightFork+ '}';
+    }
+
+    private void goSomeProcess() {
+        try {
+            Thread.sleep(1000L * new Random().nextInt(1, 10));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
