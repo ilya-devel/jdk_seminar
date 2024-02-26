@@ -1,6 +1,7 @@
 ### DIRS ###
 .idea/
 .devcontainer/
+.gradle/
 out/
 META-INF/
 
